@@ -1,10 +1,12 @@
-const io = require("socket.io")(3000);
+const http = require("http");
+const server = http.createServer();
+const io = require("socket.io")(server);
 
 let users = []; //Socket - Username
 
 io.on("connect", (socket) => {
   users[socket.id] = { name: "Anonymous" }; //Nom par défaut
-
+  console.log("ah");
   //On liste les utilisateurs disponibles, en faisant :
   // - On prend les entrées de users
   // - On filtre les utilisateurs qui n'ont pas de room et qui ne sont pas le socket actuel
@@ -39,4 +41,8 @@ io.on("connect", (socket) => {
   socket.on("disconnect", () => {
     users = users.filter(([socketId, user]) => socketId != socketId);
   });
+});
+
+server.listen(3000, () => {
+  console.log("Serveur Socket.IO en écoute sur le port 3000");
 });
