@@ -20,11 +20,12 @@ public class MainActivity extends AppCompatActivity {
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://10.243.204.79:3000");
+            mSocket = IO.socket("http://172.26.208.1:3000");
         } catch (URISyntaxException e) {
             System.out.println("Erreur : " + e);
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
