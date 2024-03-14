@@ -4,8 +4,11 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 import java.net.URISyntaxException;
 import java.util.Objects;
@@ -17,19 +20,12 @@ import io.socket.emitter.Emitter;
 import io.socket.engineio.client.Transport;
 
 public class MainActivity extends AppCompatActivity {
-    private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("http://172.26.208.1:3000");
-        } catch (URISyntaxException e) {
-            System.out.println("Erreur : " + e);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Socket mSocket = SocketManager.getInstance();
+
         mSocket.connect();
 
         mSocket.io().on(Manager.EVENT_TRANSPORT, args -> {
@@ -41,5 +37,25 @@ public class MainActivity extends AppCompatActivity {
                 Objects.requireNonNull(e.getCause()).printStackTrace();
             });
         });
+
+        mSocket.on("match", (user) -> {
+           Log.i("SOCKET", "Match avec : " + user[0].toString());
+           onMatch(user[0].toString());
+        });
+    }
+
+    public void onUserConnect(View view) {
+        Socket mSocket = SocketManager.getInstance();
+        EditText userName = (EditText)findViewById(R.id.userName);
+        if(mSocket.connected()) {
+            mSocket.emit("beginSearch", userName.getText().toString());
+            Log.i("SOCKET", "Pseudo envoyé : " + userName.getText().toString());
+        }
+    }
+
+    public void onMatch(String matchUserName) {
+        Intent matchActivity = new Intent(getApplicationContext(), MatchDiscussion.class);
+        matchActivity.putExtra("matchUserName", matchUserName);
+        startActivity(matchActivity);
     }
 }
