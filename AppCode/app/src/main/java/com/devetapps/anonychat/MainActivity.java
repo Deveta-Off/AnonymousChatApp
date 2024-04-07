@@ -38,10 +38,8 @@ public class MainActivity extends AppCompatActivity {
             });
         });
 
-        Intent matchActivity = new Intent(getApplicationContext(), MatchDiscussion.class);
-        startActivity(matchActivity);
-
-
+        //Intent matchActivity = new Intent(getApplicationContext(), MatchDiscussion.class);
+        //startActivity(matchActivity);
 
         mSocket.on("match", (user) -> {
            Log.i("SOCKET", "Match avec : " + user[0].toString());
